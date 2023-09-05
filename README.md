@@ -64,7 +64,7 @@ dagger run fluentci .
 | Job       | Description                            |
 | --------- | -------------------------------------- |
 | validate  | Validate the configuration files       |
-| apply     | Applly infrastructure changes          |
+| apply     | Apply infrastructure changes          |
 
 ## Programmatic usage
 
