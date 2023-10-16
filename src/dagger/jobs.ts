@@ -1,4 +1,4 @@
-import Client from "../../deps.ts";
+import Client, { connect } from "../../deps.ts";
 import { filterObjectByPrefix, withEnvs } from "./lib.ts";
 
 export enum Job {
@@ -14,87 +14,104 @@ const envs = filterObjectByPrefix(Deno.env.toObject(), [
   "AWS_",
 ]);
 
-export const validate = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
-  const TF_VERSION = Deno.env.get("TF_VERSION") || "latest";
+export const validate = async (src = ".", tfVersion?: string) => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
+    const TF_VERSION = Deno.env.get("TF_VERSION") || tfVersion || "latest";
 
-  const baseCtr = withEnvs(
-    client
-      .pipeline(Job.validate)
-      .container()
-      .from(`alpine/terragrunt:${TF_VERSION}`),
-    envs
-  );
+    const baseCtr = withEnvs(
+      client
+        .pipeline(Job.validate)
+        .container()
+        .from(`alpine/terragrunt:${TF_VERSION}`),
+      envs
+    );
 
-  const ctr = baseCtr
-    .withMountedCache(
-      "/app/.terragrunt-cache",
-      client.cacheVolume("terragrunt")
-    )
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec(["terraform", "--version"])
-    .withExec(["terragrunt", "--version"])
-    .withExec(["terragrunt", "run-all", "init", "--terragrunt-non-interactive"])
-    .withExec([
-      "terragrunt",
-      "run-all",
-      "validate",
-      "--terragrunt-non-interactive",
-    ]);
+    const ctr = baseCtr
+      .withMountedCache(
+        "/app/.terragrunt-cache",
+        client.cacheVolume("terragrunt")
+      )
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec(["terraform", "--version"])
+      .withExec(["terragrunt", "--version"])
+      .withExec([
+        "terragrunt",
+        "run-all",
+        "init",
+        "--terragrunt-non-interactive",
+      ])
+      .withExec([
+        "terragrunt",
+        "run-all",
+        "validate",
+        "--terragrunt-non-interactive",
+      ]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "Done";
 };
 
-export const apply = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
-  const TF_VERSION = Deno.env.get("TF_VERSION") || "latest";
+export const apply = async (src = ".", tfVersion?: string) => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
+    const TF_VERSION = Deno.env.get("TF_VERSION") || tfVersion || "latest";
 
-  const baseCtr = withEnvs(
-    client
-      .pipeline(Job.apply)
-      .container()
-      .from(`alpine/terragrunt:${TF_VERSION}`),
-    envs
-  );
+    const baseCtr = withEnvs(
+      client
+        .pipeline(Job.apply)
+        .container()
+        .from(`alpine/terragrunt:${TF_VERSION}`),
+      envs
+    );
 
-  const ctr = baseCtr
-    .withMountedCache(
-      "/app/.terragrunt-cache",
-      client.cacheVolume("terragrunt")
-    )
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec(["terraform", "--version"])
-    .withExec(["terragrunt", "--version"])
-    .withExec(["terragrunt", "run-all", "init", "--terragrunt-non-interactive"])
-    .withExec(["terragrunt", "run-all", "plan", "--terragrunt-non-interactive"])
-    .withExec([
-      "terragrunt",
-      "run-all",
-      "apply",
-      "--terragrunt-non-interactive",
-    ]);
+    const ctr = baseCtr
+      .withMountedCache(
+        "/app/.terragrunt-cache",
+        client.cacheVolume("terragrunt")
+      )
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec(["terraform", "--version"])
+      .withExec(["terragrunt", "--version"])
+      .withExec([
+        "terragrunt",
+        "run-all",
+        "init",
+        "--terragrunt-non-interactive",
+      ])
+      .withExec([
+        "terragrunt",
+        "run-all",
+        "plan",
+        "--terragrunt-non-interactive",
+      ])
+      .withExec([
+        "terragrunt",
+        "run-all",
+        "apply",
+        "--terragrunt-non-interactive",
+      ]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "Done";
 };
 
-export type JobExec = (
-  client: Client,
-  src?: string
-) =>
-  | Promise<void>
+export type JobExec = (src?: string) =>
+  | Promise<string>
   | ((
-      client: Client,
       src?: string,
       options?: {
         ignore: string[];
       }
-    ) => Promise<void>);
+    ) => Promise<string>);
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.validate]: validate,
