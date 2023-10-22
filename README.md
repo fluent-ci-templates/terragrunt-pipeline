@@ -1,7 +1,7 @@
 # Terragrunt Pipeline
 
 [![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Fterragrunt_pipeline&query=%24.version)](https://pkg.fluentci.io/terragrunt_pipeline)
-![deno compatibility](https://shield.deno.dev/deno/^1.34)
+![deno compatibility](https://shield.deno.dev/deno/^1.37)
 [![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/terragrunt-pipeline)](https://codecov.io/gh/fluent-ci-templates/terragrunt-pipeline)
 
 A ready-to-use CI/CD Pipeline for managing your infrastructure with [Terragrunt](https://terragrunt.gruntwork.io/).
@@ -65,6 +65,11 @@ fluentci run .
 | --------- | -------------------------------------- |
 | validate  | Validate the configuration files       |
 | apply     | Apply infrastructure changes          |
+
+```graphql
+apply(src: String!, tfVersion: String): String
+validate(src: String!, tfVersion: String): String
+```
 
 ## Programmatic usage
 
