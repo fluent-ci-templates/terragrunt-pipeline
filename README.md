@@ -76,7 +76,7 @@ validate(src: String!, tfVersion: String): String
 You can also use this pipeline programmatically:
 
 ```ts
-import { validate, apply } from "https://pkg.fluentci.io/terragrunt_pipeline@v0.4.1/mod.ts";
+import { validate, apply } from "https://pkg.fluentci.io/terragrunt_pipeline@v0.5.0/mod.ts";
 
 await validate();
 await apply();
