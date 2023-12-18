@@ -1,4 +1,5 @@
 import { Container } from "../../deps.ts";
+import { Client, Directory, DirectoryID } from "../../sdk/client.gen.ts";
 
 export function filterObjectByPrefix<T>(
   obj: Record<string, T>,
@@ -23,3 +24,15 @@ export function withEnvs(ctr: Container, envs: Record<string, string>) {
   }
   return ctr;
 }
+
+export const getDirectory = (
+  client: Client,
+  src: string | Directory | undefined = "."
+) => {
+  if (typeof src === "string" && src.startsWith("core.Directory")) {
+    return client.directory({
+      id: src as DirectoryID,
+    });
+  }
+  return src instanceof Directory ? src : client.host().directory(src);
+};

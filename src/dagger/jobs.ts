@@ -1,5 +1,6 @@
-import Client, { connect } from "../../deps.ts";
-import { filterObjectByPrefix, withEnvs } from "./lib.ts";
+import { Client, Directory } from "../../sdk/client.gen.ts";
+import { connect } from "../../sdk/connect.ts";
+import { filterObjectByPrefix, withEnvs, getDirectory } from "./lib.ts";
 
 export enum Job {
   validate = "validate",
@@ -14,9 +15,20 @@ const envs = filterObjectByPrefix(Deno.env.toObject(), [
   "AWS_",
 ]);
 
-export const validate = async (src = ".", tfVersion?: string) => {
+/**
+ * @function
+ * @description Validate the configuration files
+ * @param {string | Directory} src
+ * @param {string} tfVersion
+ * @returns {Promise<string>}
+ */
+export async function validate(
+  src: Directory | string | undefined = ".",
+  tfVersion?: string
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const TF_VERSION = Deno.env.get("TF_VERSION") || tfVersion || "latest";
 
     const baseCtr = withEnvs(
@@ -49,16 +61,25 @@ export const validate = async (src = ".", tfVersion?: string) => {
         "--terragrunt-non-interactive",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const apply = async (src = ".", tfVersion?: string) => {
+/**
+ * @function
+ * @description Builds or changes infrastructure
+ * @param {string | Directory} src
+ * @param {string} tfVersion
+ * @returns {Promise<string>}
+ */
+export async function apply(
+  src: Directory | string,
+  tfVersion?: string
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const TF_VERSION = Deno.env.get("TF_VERSION") || tfVersion || "latest";
 
     const baseCtr = withEnvs(
@@ -97,21 +118,15 @@ export const apply = async (src = ".", tfVersion?: string) => {
         "--terragrunt-non-interactive",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export type JobExec = (src?: string) =>
-  | Promise<string>
-  | ((
-      src?: string,
-      options?: {
-        ignore: string[];
-      }
-    ) => Promise<string>);
+export type JobExec = (
+  src: Directory | string,
+  tfVersion?: string
+) => Promise<string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.validate]: validate,

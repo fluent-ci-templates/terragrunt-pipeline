@@ -28,6 +28,15 @@ Now you can run the pipeline with:
 fluentci run .
 ```
 
+## Dagger Module
+
+Use as a [Dagger](https://dagger.io) module:
+
+```bash
+dagger mod install github.com/fluent-ci-templates/terragrunt-pipeline@mod
+```
+
+
 ## Environment variables
 
 | Variable                    | Description                                        |
@@ -58,7 +67,6 @@ fluentci run .
 | TERRAGRUNT_USE_PARTIAL_PARSE_CONFIG_CACHE | Enables caching of includes during partial parsing operations. Will also be used for the --terragrunt-iam-role option if provided. |
 | TERRAGRUNT_WORKING_DIR | The path to the Terraform templates. Default is current directory. |
 
-
 ## Jobs
 
 | Job       | Description                            |
@@ -66,9 +74,16 @@ fluentci run .
 | validate  | Validate the configuration files       |
 | apply     | Apply infrastructure changes          |
 
-```graphql
-apply(src: String!, tfVersion: String): String
-validate(src: String!, tfVersion: String): String
+```typescript
+apply(
+  src: Directory | string,
+  tfVersion?: string
+): Promise<string>
+
+validate(
+  src: Directory | string,
+  tfVersion?: string
+): Promise<string>
 ```
 
 ## Programmatic usage
@@ -76,8 +91,8 @@ validate(src: String!, tfVersion: String): String
 You can also use this pipeline programmatically:
 
 ```ts
-import { validate, apply } from "https://pkg.fluentci.io/terragrunt_pipeline@v0.5.0/mod.ts";
+import { validate, apply } from "https://pkg.fluentci.io/terragrunt_pipeline@v0.6.0/mod.ts";
 
-await validate();
-await apply();
+await validate(".");
+await apply(".");
 ```
