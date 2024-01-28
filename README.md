@@ -91,7 +91,7 @@ validate(
 You can also use this pipeline programmatically:
 
 ```ts
-import { validate, apply } from "https://pkg.fluentci.io/terragrunt_pipeline@v0.6.0/mod.ts";
+import { validate, apply } from "https://pkg.fluentci.io/terragrunt_pipeline@v0.6.1/mod.ts";
 
 await validate(".");
 await apply(".");
