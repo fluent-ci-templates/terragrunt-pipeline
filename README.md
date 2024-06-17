@@ -91,7 +91,7 @@ validate(
 You can also use this pipeline programmatically:
 
 ```ts
-import { validate, apply } from "@fluentci/terragrunt";
+import { validate, apply } from "jsr:@fluentci/terragrunt";
 
 await validate(".");
 await apply(".");
