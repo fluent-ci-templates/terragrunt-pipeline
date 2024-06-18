@@ -1,7 +1,9 @@
 # Terragrunt Pipeline
 
-[![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Fterragrunt_pipeline&query=%24.version)](https://pkg.fluentci.io/terragrunt_pipeline)
-![deno compatibility](https://shield.deno.dev/deno/^1.37)
+[![fluentci pipeline](https://shield.fluentci.io/x/terragrunt_pipeline)](https://pkg.fluentci.io/terragrunt_pipeline)
+[![deno module](https://shield.deno.dev/x/terragrunt_pipeline)](https://deno.land/x/terragrunt_pipeline)
+![deno compatibility](https://shield.deno.dev/deno/^1.42)
+[![dagger-min-version](https://shield.fluentci.io/dagger/v0.11.7)](https://dagger.io)
 [![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/terragrunt-pipeline)](https://codecov.io/gh/fluent-ci-templates/terragrunt-pipeline)
 
 A ready-to-use CI/CD Pipeline for managing your infrastructure with [Terragrunt](https://terragrunt.gruntwork.io/).
