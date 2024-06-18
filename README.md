@@ -1,7 +1,6 @@
 # Terragrunt Pipeline
 
 [![fluentci pipeline](https://shield.fluentci.io/x/terragrunt_pipeline)](https://pkg.fluentci.io/terragrunt_pipeline)
-[![deno module](https://shield.deno.dev/x/terragrunt_pipeline)](https://deno.land/x/terragrunt_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.42)
 [![dagger-min-version](https://shield.fluentci.io/dagger/v0.11.7)](https://dagger.io)
 [![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/terragrunt-pipeline)](https://codecov.io/gh/fluent-ci-templates/terragrunt-pipeline)
