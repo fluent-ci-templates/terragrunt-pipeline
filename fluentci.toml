@@ -5,4 +5,4 @@ authors = [
 description = "CI/CD Plugin for Terragrunt"
 license = "MIT"
 name = "terragrunt"
-version = "0.7.0"
+version = "0.7.1"
