@@ -34,7 +34,7 @@ fluentci run .
 Use as a [Dagger](https://dagger.io) module:
 
 ```bash
-dagger mod install github.com/fluent-ci-templates/terragrunt-pipeline@mod
+dagger install github.com/fluent-ci-templates/terragrunt-pipeline@main
 ```
 
 
