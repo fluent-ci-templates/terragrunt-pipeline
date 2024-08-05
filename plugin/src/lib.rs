@@ -40,6 +40,16 @@ pub fn validate(args: String) -> FnResult<String> {
 }
 
 #[plugin_fn]
+pub fn hclfmt(args: String) -> FnResult<String> {
+    let args = args.split_whitespace().collect::<Vec<&str>>();
+    let stdout = dag()
+        .pkgx()?
+        .with_exec(vec!["terragrunt", "hclfmt", &args.join(" ")])?
+        .stdout()?;
+    Ok(stdout)
+}
+
+#[plugin_fn]
 pub fn init(args: String) -> FnResult<String> {
     let args = args.split_whitespace().collect::<Vec<&str>>();
     let stdout = dag()
